@@ -54,3 +54,64 @@ export interface ExpenseSummary {
   expenseCount: number;
   averageExpense: number;
 }
+
+// ========== INTELLIGENT BUDGET TYPES ==========
+
+export interface CategoryBudget {
+  category: ExpenseCategory;
+  monthlyLimit: number;
+  spent: number;
+  remaining: number;
+  percentageUsed: number;
+}
+
+export interface BudgetSettings {
+  budgets: Record<ExpenseCategory, number>;
+  currency: string;
+}
+
+export interface RecurringExpense {
+  description: string;
+  category: ExpenseCategory;
+  averageAmount: number;
+  frequency: 'daily' | 'weekly' | 'monthly';
+  occurrences: number;
+  confidence: number;
+  lastOccurrence: string;
+  nextExpected: string;
+}
+
+export interface SmartInsight {
+  id: string;
+  type: 'warning' | 'tip' | 'achievement' | 'prediction';
+  title: string;
+  message: string;
+  category?: ExpenseCategory;
+  amount?: number;
+  date: string;
+  priority: number;
+}
+
+export interface FinancialHealth {
+  score: number;
+  level: 'Excellent' | 'Good' | 'Fair' | 'Poor';
+  factors: {
+    budgetAdherence: number;
+    savingsRate: number;
+    spendingTrend: number;
+    categoryBalance: number;
+  };
+  recommendations: string[];
+}
+
+export interface SavingsGoal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  deadline: string;
+  category?: ExpenseCategory;
+  priority: 'high' | 'medium' | 'low';
+  createdAt: string;
+  updatedAt: string;
+}
