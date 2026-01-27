@@ -1,10 +1,26 @@
-export type ExpenseCategory =
-  | 'Food'
-  | 'Transportation'
-  | 'Entertainment'
-  | 'Shopping'
-  | 'Bills'
-  | 'Other';
+// Default categories that ship with the app
+export const DEFAULT_CATEGORIES = [
+  'Food',
+  'Transportation',
+  'Entertainment',
+  'Shopping',
+  'Bills',
+  'Other',
+] as const;
+
+export type DefaultCategory = typeof DEFAULT_CATEGORIES[number];
+
+// Category can be a default or custom string
+export type ExpenseCategory = string;
+
+export interface CustomCategory {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  createdAt: string;
+  isDefault?: boolean;
+}
 
 export interface Expense {
   id: string;

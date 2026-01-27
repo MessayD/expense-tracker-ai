@@ -1,28 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from './ui/Input';
 import { Select } from './ui/Select';
 import { Button } from './ui/Button';
 import { Card } from './ui/Card';
-import { ExpenseCategory, ExpenseFormData } from '@/types/expense';
+import { ExpenseFormData } from '@/types/expense';
 import { validateExpenseForm, generateId } from '@/lib/utils';
 import { storageUtils } from '@/lib/storage';
-
-const CATEGORIES: { value: ExpenseCategory; label: string }[] = [
-  { value: 'Food', label: '🍔 Food' },
-  { value: 'Transportation', label: '🚗 Transportation' },
-  { value: 'Entertainment', label: '🎮 Entertainment' },
-  { value: 'Shopping', label: '🛍️ Shopping' },
-  { value: 'Bills', label: '📄 Bills' },
-  { value: 'Other', label: '📌 Other' },
-];
+import { categoryStorage } from '@/lib/categoryStorage';
 
 interface ExpenseFormProps {
   onSuccess?: () => void;
+  refreshCategories?: number; // Trigger to refresh categories
 }
 
-export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSuccess }) => {
+export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSuccess, refreshCategories }) => {
+  const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
   const [formData, setFormData] = useState<ExpenseFormData>({
     date: new Date().toISOString().split('T')[0],
     amount: '',
@@ -32,6 +26,10 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSuccess }) => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setCategories(categoryStorage.getCategoryOptions());
+  }, [refreshCategories]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -124,7 +122,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSuccess }) => {
           name="category"
           value={formData.category}
           onChange={handleChange}
-          options={CATEGORIES}
+          options={categories}
         />
 
         <Input

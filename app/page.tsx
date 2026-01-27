@@ -20,9 +20,10 @@ import { BudgetManager } from '@/components/BudgetManager';
 import { SmartInsights } from '@/components/SmartInsights';
 import { FinancialHealthScore } from '@/components/FinancialHealthScore';
 import { SavingsGoals } from '@/components/SavingsGoals';
+import { CategoryManager } from '@/components/CategoryManager';
 import { Button } from '@/components/ui/Button';
 
-type View = 'dashboard' | 'expenses' | 'add' | 'budgets' | 'insights' | 'health' | 'goals';
+type View = 'dashboard' | 'expenses' | 'add' | 'budgets' | 'insights' | 'health' | 'goals' | 'categories';
 
 export default function Home() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -42,6 +43,7 @@ export default function Home() {
     currency: 'USD'
   });
   const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>([]);
+  const [categoryRefreshKey, setCategoryRefreshKey] = useState(0);
 
   useEffect(() => {
     const loadedExpenses = storageUtils.getExpenses();
@@ -92,6 +94,10 @@ export default function Home() {
   const handleGoalsUpdate = () => {
     const loadedGoals = budgetStorage.getSavingsGoals();
     setSavingsGoals(loadedGoals);
+  };
+
+  const handleCategoriesChange = () => {
+    setCategoryRefreshKey(prev => prev + 1);
   };
 
   // Calculate intelligent data
@@ -180,6 +186,12 @@ export default function Home() {
           >
             ➕ Add Expense
           </Button>
+          <Button
+            variant={currentView === 'categories' ? 'primary' : 'secondary'}
+            onClick={() => setCurrentView('categories')}
+          >
+            🏷️ Categories
+          </Button>
         </div>
 
         {currentView === 'dashboard' && (
@@ -245,7 +257,13 @@ export default function Home() {
           />
         )}
 
-        {currentView === 'add' && <ExpenseForm onSuccess={handleAddSuccess} />}
+        {currentView === 'add' && (
+          <ExpenseForm onSuccess={handleAddSuccess} refreshCategories={categoryRefreshKey} />
+        )}
+
+        {currentView === 'categories' && (
+          <CategoryManager onCategoriesChange={handleCategoriesChange} />
+        )}
       </div>
 
       <EditExpenseModal

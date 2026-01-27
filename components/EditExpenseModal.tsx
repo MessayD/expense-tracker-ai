@@ -8,15 +8,7 @@ import { Button } from './ui/Button';
 import { Expense, ExpenseCategory } from '@/types/expense';
 import { validateExpenseForm } from '@/lib/utils';
 import { storageUtils } from '@/lib/storage';
-
-const CATEGORIES: { value: ExpenseCategory; label: string }[] = [
-  { value: 'Food', label: '🍔 Food' },
-  { value: 'Transportation', label: '🚗 Transportation' },
-  { value: 'Entertainment', label: '🎮 Entertainment' },
-  { value: 'Shopping', label: '🛍️ Shopping' },
-  { value: 'Bills', label: '📄 Bills' },
-  { value: 'Other', label: '📌 Other' },
-];
+import { categoryStorage } from '@/lib/categoryStorage';
 
 interface EditExpenseModalProps {
   isOpen: boolean;
@@ -31,6 +23,7 @@ export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({
   expense,
   onSuccess,
 }) => {
+  const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
   const [formData, setFormData] = useState({
     date: '',
     amount: '',
@@ -40,6 +33,10 @@ export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setCategories(categoryStorage.getCategoryOptions());
+  }, [isOpen]);
 
   useEffect(() => {
     if (expense) {
@@ -133,7 +130,7 @@ export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({
           name="category"
           value={formData.category}
           onChange={handleChange}
-          options={CATEGORIES}
+          options={categories}
         />
 
         <Input
