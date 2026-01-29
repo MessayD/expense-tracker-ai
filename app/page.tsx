@@ -16,6 +16,7 @@ import { Dashboard } from '@/components/Dashboard';
 import { SpendingChart } from '@/components/SpendingChart';
 import { EditExpenseModal } from '@/components/EditExpenseModal';
 import { CloudExportHub } from '@/components/CloudExportHub';
+import { DataExportModal } from '@/components/DataExportModal';
 import { BudgetManager } from '@/components/BudgetManager';
 import { SmartInsights } from '@/components/SmartInsights';
 import { FinancialHealthScore } from '@/components/FinancialHealthScore';
@@ -31,6 +32,7 @@ export default function Home() {
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCloudExportOpen, setIsCloudExportOpen] = useState(false);
+  const [isDataExportOpen, setIsDataExportOpen] = useState(false);
   const [budgetSettings, setBudgetSettings] = useState<BudgetSettings>({
     budgets: {
       Food: 0,
@@ -129,6 +131,13 @@ export default function Home() {
                   {financialHealth.score}
                 </span>
               </div>
+              <Button
+                onClick={() => setIsDataExportOpen(true)}
+                variant="success"
+                size="sm"
+              >
+                📥 Export Data
+              </Button>
               <Button
                 onClick={() => setIsCloudExportOpen(true)}
                 variant="secondary"
@@ -276,6 +285,12 @@ export default function Home() {
       <CloudExportHub
         isOpen={isCloudExportOpen}
         onClose={() => setIsCloudExportOpen(false)}
+        expenses={expenses}
+      />
+
+      <DataExportModal
+        isOpen={isDataExportOpen}
+        onClose={() => setIsDataExportOpen(false)}
         expenses={expenses}
       />
 
